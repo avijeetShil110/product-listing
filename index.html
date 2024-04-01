@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Listing</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      text-align: left;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: calc(100% - 250px); /* Adjust based on the width of the navbar */
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    nav {
+      background-color: #333;
+      padding: 10px 20px;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #555;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    .product-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .product-item {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(to bottom right, #ff5f6d, #ffc371);
+    }
+
+    .product-item img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .search-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      padding: 10px;
+      width: 300px;
+      margin-right: 10px;
+    }
+
+    .search-button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .search-button:hover {
+      background-color: #0056b3;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 20px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .social-icons {
+      margin-top: 10px;
+    }
+
+    .social-icons a {
+      color: #fff;
+      font-size: 24px;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .social-icons a:hover {
+      color: #007bff;
+    }
+
+    .switch {
+      display: inline-block;
+      position: relative;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <header>
+      <h1>Product Listing Website</h1>
+    </header>
+    <div class="switch" style="margin-right: 20px;">
+      <input type="checkbox" id="themeToggle">
+      <span class="slider round"></span>
+    </div>
+    <div>
+      <a href="#">Home</a>
+      <a href="#">Products</a>
+      <a href="#">Contact</a>
+      <a href="#" id="cartButton">Cart (0)</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search products...">
+      <button class="search-button">Search</button>
+    </div>
+    <div class="product-container" id="product-list">
+      <!-- Product items will be dynamically added here -->
+    </div>
+  </main>
+
+  <div id="cartModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Your Cart</h2>
+      <ul id="cartItems"></ul>
+      <p id="cartTotal">Total: $0.00</p>
+      <button id="checkoutButton">Checkout</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+    </div>
+    <p>&copy; 2024 Product Listing. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const stylesheet = document.getElementById('stylesheet');
+
+    themeToggle.addEventListener('change', () => {
+      if (themeToggle.checked) {
+        stylesheet.href = 'styles-dark.css';
+      } else {
+        stylesheet.href = 'styles-light.css';
+      }
+    });
+
+    const cartButton = document.getElementById('cartButton');
+    const cartModal = document.getElementById('cartModal');
+    const closeCartBtn = document.querySelector('.close');
+    const checkoutButton = document.getElementById('checkoutButton');
+    const cartItemsList = document.getElementById('cartItems');
+    const cartTotalDisplay = document.getElementById('cartTotal');
+
+    const cart = {
+      items: [],
+      total: 0,
+      addItem: function(item) {
+        this.items.push(item);
+        this.total += item.price;
+        this.updateCart();
+      },
+      updateCart: function() {
+        cartItemsList.innerHTML = '';
+        this.items.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = `${item.name} - $${item.price.toFixed(2)}`;
+          cartItemsList.appendChild(li);
+        });
+        cartTotalDisplay.textContent = `Total: $${this.total.toFixed(2)}`;
+        cartButton.textContent = `Cart (${this.items.length})`;
+      }
+    };
+
+    function displayProducts() {
+      const productList = document.getElementById("product-list");
+      productList.innerHTML = ''; // Clear existing products
+
+      products.forEach(product => {
+        const productItem = document.createElement("div");
+        productItem.classList.add("product-item");
+        productItem.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h2>${product.name}</h2>
+          <p>Price: $${product.price}</p>
+          <button class="add-to-cart" data-name="${product.name}" data-price="${product.price}">Add to Cart</button>
+        `;
+        productList.appendChild(productItem);
+      });
+    }
+
+    function showModal() {
+      cartModal.style.display = 'block';
+    }
+
+    function hideModal() {
+      cartModal.style.display = 'none';
+    }
+
+    function addToCart(event) {
+      if (event.target.classList.contains('add-to-cart')) {
+        const name = event.target.getAttribute('data-name');
+        const price = parseFloat(event.target.getAttribute('data-price'));
+        cart.addItem({ name, price });
+      }
+    }
+
+    // Event listeners
+    window.onload = displayProducts;
+    cartButton.addEventListener('click', showModal);
+    closeCartBtn.addEventListener('click', hideModal);
+    checkoutButton.addEventListener('click', () => {
+      alert('Thank you for your purchase!');
+      cart.items = [];
+      cart.total = 0;
+      cart.updateCart();
+      hideModal();
+    });
+    document.addEventListener('click', addToCart);
+
+    // Sample product data with images
+    const products = [
+      { name: "Product 1", price: 29.99, image: "product1.jpg" },
+      { name: "Product 2", price: 49.99, image: "product2.jpg" },
+      { name: "Product 3", price: 39.99, image: "product3.jpg" },
+      { name: "Product 4", price: 59.99, image: "product4.jpg" },
+      { name: "Product 5", price: 19.99, image: "product5.jpg" }
+    ];
+  </script>
+</body>
+</html>
