@@ -179,6 +179,11 @@
     .slider.round:before {
       border-radius: 50%;
     }
+    .search-button {
+    color: #ffffff; /* Change the text color to white or any other color with better contrast */
+    background-color: #007bff; /* Adjust the background color as needed */
+    /* Add any other styling properties as necessary */
+}
   </style>
 </head>
 <body>
@@ -201,7 +206,8 @@
 
   <main>
     <div class="search-container">
-      <input type="text" class="search-input" placeholder="Search products...">
+      <label for="search-input">Search Products:</label>
+      <input type="text" id="search-input" class="search-input" placeholder="Search products...">
       <button class="search-button">Search</button>
     </div>
     <div class="product-container" id="product-list">
